@@ -1,6 +1,7 @@
 import express from "express";
 import { config } from "dotenv";
 import { connectDB, disconnectDB } from "./config/db.js";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 // Import Routes
 import movieRoutes from "./routes/movieRoutes.js";
@@ -20,6 +21,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/movies", movieRoutes);
 app.use("/auth", authRoutes);
 app.use("/watchlist", watchlistRoutes);
+
+// Error handling (must come after all routes)
+app.use(notFound); // unknown routes -> 404 JSON
+app.use(errorHandler); // any thrown/rejected error -> JSON response
 
 const server = app.listen(process.env.PORT || 5001, "0.0.0.0", () => {
   console.log(`Server running on PORT ${process.env.PORT}`);
