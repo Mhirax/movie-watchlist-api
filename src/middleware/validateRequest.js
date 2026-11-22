@@ -14,6 +14,10 @@ export const validateRequest = (schema) => {
       return res.status(400).json({ message: flatErrors.join(", ") });
     }
 
+    // Replace the raw body with Zod's parsed output so controllers get the
+    // cleaned values (trimmed/lowercased strings, coerced numbers) and no
+    // fields that aren't in the schema.
+    req.body = result.data;
     next();
   };
 };
